@@ -10,7 +10,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityUserController extends AbstractController
 {
     /**
-     * @Route("/login", name="app_login")
+     * @Route("/login_user", name="app_login_user")
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
@@ -27,7 +27,7 @@ class SecurityUserController extends AbstractController
     }
 
     /**
-     * @Route("/logout", name="app_logout")
+     * @Route("/logout_user", name="app_logout_user")
      */
     public function logout(): void
     {
