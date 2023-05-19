@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HomeController!{% endblock %}
+
+{% block body %}
+{# /* <style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style> */ #}
+
+
+<div class="container-fluid">
+    <header class="head">
+        <div class="navhead">
+            <div>
+               <a class="navbar-brand" href="{{path('app_home')}}">
+                    <img class="logo"src="{{asset('image/logo.png')}}">
+                </a>  
+            </div>
+            <div class="navItem">
+                <div class="navItem1">
+                    <div class="item1">
+                        <div class="dropdown">
+                            <button type="button" onclick="menudrop()" class="dropdown btn btn-light" id="dropdown">Rechercher</button>
+                                <div class="dropdown-menu" id="drop-menu">
+                                    <div class="row">
+                                        <div class="col-md-4"> <h4>Recherche rapide</h4> </div>
+                                        <div class="col-md-4"> <h4>Emplois par province</h4> </div>
+                                        <div class="col-md-4"> <h4>Emplois par profession</h4> </div>
+                                        <div class="col-md-4"> </div>
+                                    </div>
+            
+                                    <div class="row">
+                                        <div class="col-md-4"> 
+                                            <a class="dropdown"href="{{path('app_home')}}">Rechercher un emploi</a>
+                                            <a class="dropdown" href="#">Rechercher un petit boulot</a>
+                                        </div>
+                                         <div class="col-md-4"> 
+                                            <a class="dropdown" href="#">Emplois à Tananarive</a>
+                                            <a class="dropdown" href="#">Emplois à Diego-Suarez</a>
+                                            <a class="dropdown" href="#">Emplois à Fianarantsoa</a> 
+                                            <a class="dropdown" href="#">Emplois à Majunga</a> 
+                                            <a class="dropdown" href="#">Emplois à Tamatave</a> 
+                                            <a class="dropdown" href="#">Emplois à Tuliar</a> 
+                                            <a class="dropdown" href="#">Voir plus d'emplois par ville</a> 
+                                            
+                                        </div>
+                                         <div class="col-md-4"> 
+                                            <a class="dropdown" href="#">Emplois en comptabilité</a>
+                                            <a class="dropdown" href="#">Emplois en vente</a>
+                                            <a class="dropdown" href="#">Emplois en informatique</a>
+                                            <a class="dropdown" href="#">Emplois en transport</a>
+                                            <a class="dropdown" href="#">Emplois en informatique</a>
+                                            <a class="dropdown" href="#">Voir plus d'emplois par profession</a> 
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                    <!--path('app_inscription_recruteur') dans RegistrationController-->
+                    {# <div class="item1"><a class="nav-link text-white" href="{{path('app_inscription_recruteur')}}">recruteur</a></div> #}
+                    <div class="item1"><a class="nav-link text-white" href="">recruteur</a></div>
+                </div>
+                <div class="navItem2">
+                    <!--path('app_login') dans SecurityController
+                        path('app_inscription') dans RegistrationController
+                    -->
+                    {# <div class="item2"><a href="{{path('app_login')}}"><button class="btnhead1 btn btn-light">se connecter</button></a></div> #}
+                    <div class="item2"><a href=""><button class="btnhead1 btn btn-light">se connecter</button></a></div>
+                    {# <div class="item2"><a href="{{path('app_inscription')}}"><button class="btnhead2 btn btn-light">s'inscrire</button></a></div> #}
+                    <div class="item2"><a href=""><button class="btnhead2 btn btn-light">s'inscrire</button></a></div>
+                </div>
+            </div>
+        </div>
+        <div class="textHeader">
+            <h4>Tu es un <b class="styleCandidat">candidat</b> en quête de son emploi de rêve? </h4>
+            <H5>N'attend plus, commence ta recherche dès maintenant</h5>
+            <div class="btnRechercher">
+                <div class="btnRechercher">
+                    {# <a href="{{path('app_index_offre')}}"><button class="lien btn btn-primary">Cliquez ici</button></a> #}
+                    <a href=""><button class="lien btn btn-primary">Cliquez ici</button></a>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="bannier"style="background-image:linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{{asset('../../image/bannier.jpg')}}')">
+        <div class="textbannier">
+            <h4>Tu es une <b class="styleCandidat">personne</b> en quête de revenu? </h4>
+            <H5>N'attend plus, commence ta recherche dès maintenant</h5>
+            <div class="btnRechercher">
+                <div class="btnRechercher">
+                    {# <a href="{{path('app_index_offre')}}"><button class="lien btn btn-primary">Cliquez ici</button></a> #}
+                    <a href=""><button class="lien btn btn-primary">Cliquez ici</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+
+    </div>
+</div>
+{% endblock %}

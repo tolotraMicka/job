@@ -1,0 +1,248 @@
+/* #054c58 couleur logo
+    #e99b18 couleur logo jaune
+*/
+header{
+    background-color: #054c58;
+    /* background-color: #F45050 ; */
+    box-shadow: 2px 6px 3px gray;
+}
+.navhead{
+    display:flex;
+    flex-direction: row;
+}
+.navItem{
+    display: flex;
+    flex-direction: row;
+    width: -webkit-fill-available;
+}
+.navItem1{
+    display: flex;
+    flex-direction: row;
+}
+.item1{
+    margin-top: auto;
+    margin-bottom: 44px;
+    margin-right: 20px;
+    font-size: x-large;
+    width: max-content;
+}
+.item1 .nav-link{
+    padding-top: 80px;
+    font-family:"Roboto Bold",arial,sans-serif;
+}
+.navItem2{
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    width: -webkit-fill-available;
+}
+.item2{
+    margin-top: auto;
+    margin-bottom: 44px;
+    margin-right: 20px;
+    font-size: x-large;
+}
+.logo{
+    width: 130px;
+    height: 130px;
+    border-radius: 100px;
+    margin: 15px;
+    margin-left: 20px;
+    border: 2px solid white;
+}
+.bannier{
+    width: -webkit-fill-available;
+    border: 1px solid black;
+    height: 320px;
+    margin-top: 5px;
+    background-attachment: scroll;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+.head h4{
+    font-size: 2rem;
+    text-align: center;
+    margin: 0px;
+    color: white;
+}
+.textbannier h4{
+    font-size: 2rem;
+    text-align: center;
+    margin: 0px;
+    color: white;
+}
+.styleCandidat{
+    color:#e99b18;
+}
+.head h5{
+    font-size: 1rem;
+    text-align: center;
+    margin: 0px;
+    color: white;
+    padding: 15px;
+}
+.textbannier h5{
+    font-size: 1rem;
+    text-align: center;
+    margin: 0px;
+    color: white;
+    padding: 15px;
+}
+.textbannier{
+    margin-top: 100px;
+}
+.btnRechercher{
+    width: -webkit-fill-available;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+}
+.btnRechercher .lien{
+    width: 403px;
+    margin: 0px;
+    background-color: #e99b18 !important;
+    font-family:"Roboto Bold",arial,sans-serif;
+}
+.btnRechercher .research{
+    width: 403px;
+    margin: 0px;
+    background-color: #054c58 !important;
+    font-family:"Roboto Bold",arial,sans-serif;
+}
+.textHeader{
+    padding-bottom: 25px;
+}
+.btnhead1{
+    /* background-image: linear-gradient(90deg, #020024 0%, #090979 35%, #00d4ff 100%) !important; */
+    font-family:"Roboto Bold",arial,sans-serif;
+    color: rgb(76,81,111);
+    margin-top: -23px;
+}
+.btnhead2{
+    /* background-image: linear-gradient(90deg, #020024 0%, #090979 35%, #00d4ff 100%) !important; */
+    background-color: #054c58 !important;
+    font-family:"Roboto Bold",arial,sans-serif;
+    color: #e99b18;
+    margin-top: -23px;
+}
+.section{
+    width: -webkit-fill-available;
+    border: 1px solid black;
+    height: 500px;
+    margin-top: 5px;
+    background-attachment: scroll;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    filter: brightness();
+}
+/*-------------------------------Style Offre d'emploi---------------------------------------*/
+.formInput{
+    justify-content: center;
+    margin-bottom: 6px;
+    font-family:"Roboto Bold",arial,sans-serif;
+}
+.input_Recherche[type=text]{ 
+    width: 100%; 
+    padding: 10px 34px;  
+    display: inline-block; 
+    border: 1px solid #ccc; 
+    box-sizing: border-box; 
+} 
+.formOption{
+    justify-content: center;
+    margin-bottom: 10px;
+}
+.formOption .itemOption{
+    font-family:"Roboto Bold",arial,sans-serif;
+    color: gray;
+}
+.bannierOffre{
+    background-color: gray;
+    width: rgb(81,81,81);
+}
+.font_titre {
+    position: relative;
+}
+.font_titre i{
+    position: absolute;
+    left: 23px;
+    top: 14px;
+    color: gray;
+}
+.formRecherche{
+    padding-top: 30px;
+    padding-bottom: 20px;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+.sectionJob{
+    width: 100%;
+    height: 83px;
+    background-color: beige;
+    text-align: initial;
+    border: 1px solid black;
+    overflow: hidden;
+    margin-bottom: 25px;
+}
+.card{
+    margin-bottom: 8px;
+}
+.card h5{
+    width:250px;
+}
+.card a{
+    text-decoration: none;
+    color: rgb(81,81,81);
+}
+.itemLocalisation{
+    display: inline-block;
+    margin-left: 10px;
+}
+.styleLoc{
+    color: #054c58;
+}
+.dropdown-menu{
+    position: absolute;
+    z-index: 1000;
+    display: none;
+    min-width: 52rem;
+    padding: .5rem 0;
+    margin: 0;
+    font-size: 1rem;
+    color: #212529;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: .25rem;
+}
+.dropdown{
+    margin-top: -25px;
+}
+.dropdown-menu h4{
+    text-align: start;
+    font-size: medium;
+    color: #515151;
+    font-family: "Roboto Bold",arial,sans-serif;
+    margin-left: 13px;
+    font-weight: 700; /*gras texte*/
+}
+.dropdown-menu a{
+    display: block;
+    margin: 1px;
+    color: #e99b18;
+    font-family: "Roboto Bold",arial,sans-serif;
+    margin-left: 13px;
+    text-decoration: none;
+}
+.dropdown-menu a:hover{
+    display: block;
+    margin: 1px;
+    color: #e99b18;
+    font-family: "Roboto Bold",arial,sans-serif;
+    margin-left: 13px;
+    text-decoration: underline;
+}
