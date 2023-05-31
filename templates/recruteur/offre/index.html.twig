@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vos offres{% endblock %}
+
+{% block body %}
+    <div id="container">
+        {% for offre in variables['offres'] %}
+            <div id="offre">
+                <h4>{{ offre.titre }}</h4>
+                <div id="salaire">{{ offre.Salaire_min }} - {{ offre.Salaire_max }} </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

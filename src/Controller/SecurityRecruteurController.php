@@ -77,7 +77,7 @@ class SecurityRecruteurController extends AbstractController
                 $tokenStorage->setToken($token,'recruteur');
 
                 // Rediriger l'utilisateur vers la page d'accueil ou toute autre page souhaitée
-                return $this->redirectToRoute('app_home');
+                return $this->redirectToRoute('recruteur_accueil');
             }
             //  else {
             //     throw new BadCredentialsException('Invalid email or password');
