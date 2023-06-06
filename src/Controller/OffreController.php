@@ -73,7 +73,13 @@ class OffreController extends AbstractController
             'id_recruteur' => $this->security->getUser()->getId()
         ];
 
-        $offre = new Offre();
+        if($request->request->get('id') > 0) {
+            $repo = $this->entityManager->getRepository(Offre::class);
+            $offre = $repo->find($request->request->get('id'));
+        }
+        else {
+            $offre = new Offre();
+        }
 
         $offre->setTitre($data['titre']);
         $offre->setDatePublication($data['date_publication']);
@@ -128,6 +134,25 @@ class OffreController extends AbstractController
             'controller_name' => 'OffreController',
             'variables' => ['types' => $results, 'id' => $id, 'offre' => $offre]
         ]);
+    }
+
+    /**
+     * @Route("/cloturer_offre", name="cloturer_offre")
+     */
+    public function cloturer_offre(Request $request)
+    {
+        $repo = $this->entityManager->getRepository(Offre::class);
+        $offre = $repo->find($request->request->get('id'));
+
+        $offre->setDone(1);
+        $this->entityManager->persist($offre);
+        $this->entityManager->flush();
+
+        // Convertissez les données en JSON et créez une réponse JSON
+        $json = json_encode("Offre cloturée avec succès");
+        $response = new JsonResponse($json, 200, [], true);
+
+        return $response;
     }
     
 }

@@ -65,11 +65,16 @@ class Offre
      */
     private $id_recruteur;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $done;
+
     public function getId(): ?int
     {
         return $this->id;
     }
-
+    
     public function getTitre(): ?string
     {
         return $this->titre;
@@ -174,6 +179,18 @@ class Offre
     public function setIdRecruteur(int $id_recruteur): self
     {
         $this->id_recruteur = $id_recruteur;
+
+        return $this;
+    }
+
+    public function getDone(): ?int
+    {
+        return $this->done;
+    }
+
+    public function setDone(int $done): self
+    {
+        $this->done = $done;
 
         return $this;
     }
