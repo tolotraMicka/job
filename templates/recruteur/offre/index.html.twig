@@ -3,13 +3,83 @@
 {% block title %}Vos offres{% endblock %}
 
 {% block body %}
+    <style>
+        #offre {
+            box-shadow: 1px 2px 8px;
+            width: 40%;
+            margin: 1rem;
+            border-radius: 1rem;
+            padding: 2rem;
+        }
+        #salaire {
+            box-shadow: 1px 1px 5px grey;
+            background-color: #e9e9e2ba;
+            width: 50%;
+            border-radius: 5px;
+            font-style: italic;
+            padding-left: .5rem;
+        }
+        #date_publication {
+            margin-top: 2rem;
+            font-size: 13px;
+            color: grey;
+            font-style: italic;
+        }
+        #footer {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+        }
+        #liste{
+            width: 80%;
+        }
+        #container {
+            display: flex;
+            flex-direction: row;
+        }
+        #container_detail {
+            
+        }
+    </style>
     <div id="container">
-        {% for offre in variables['offres'] %}
-            <div id="offre">
-                <h4>{{ offre.titre }}</h4>
-                <div id="salaire">{{ offre.Salaire_min }} - {{ offre.Salaire_max }} </div>
-            </div>
-        {% endfor %}
+        <div id="liste">
+            {% for offre in variables['offres'] %}
+                <div id="offre">
+                    <h4 id="titre">{{ offre.titre }}</h4>
+                    <h5 id="societe">{{ offre.societe }}</h5>
+                    <h6 id="type">{{ offre.nom_type }}</h6>
+                    <div id="salaire">{{ offre.salaire_min }}$ - {{ offre.salaire_max }}$ </div>
+                    <div id="footer">
+                        <div id="date_publication">Publié depuis {{ getDiffDate(offre.date_publication) }} jours</div>
+                        <div><a href="#" onclick="voir_detail_offre({{ offre.id }})">Voir plus</a></div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div id="container_detail">
+            <div id="detail">
+            
+            <div>
+        <div>
     </div>
+    <script>
+        function voir_detail_offre(offreId) {
+            jQuery.ajax({
+                method: 'POST',
+                url: "{{ path('detail_offre') }}",
+                data: {id: offreId}
+            }).done(function (response) {
+                $("#container_detail").css({"box-shadow": "1px 1px 5px grey",
+                                        "width": "50%",
+                                        "padding": "5rem",
+                                        "margin-top": "1.5rem",
+                                        "border-radius": "1rem",
+                                        "margin-right": "1rem",
+                                        "margin-bottom": "1rem"})
+                $("#detail").html(response);
+            });
+
+        }
+    </script>
 
 {% endblock %}

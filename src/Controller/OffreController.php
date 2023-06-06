@@ -11,6 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class OffreController extends AbstractController
 {
@@ -27,20 +28,13 @@ class OffreController extends AbstractController
      */
     public function index(): Response
     {
-        $repository = $this->entityManager->getRepository(Offre::class);
-
-        $query = $repository->createQueryBuilder('o')
-            ->leftJoin('o.type', 't')
-            ->getQuery()
-            ->getResult();
-        dd($query);
-
-        // $offres = $repository->createQueryBuilder('offre')
-        //     ->leftJoin(Type::class, 'type', 'WITH', 'type = offre.type')
-        //     ->where('offre.id_recruteur = :id_recruteur')
-        //     ->setParameter('id_recruteur', $this->security->getUser()->getId())
-        //     ->getQuery()
-        //     ->getResult();
+        $sql = "SELECT offre.*, r.societe, type.nom as nom_type, offre.id as id FROM offre
+                LEFT JOIN recruteur r on r.id = offre.id_recruteur
+                LEFT JOIN type on type.id = offre.type 
+                WHERE id_recruteur = ".$this->security->getUser()->getId()." ";
+        $connection = $this->entityManager->getConnection();
+        $statement = $connection->executeQuery($sql);
+        $offres = $statement->fetchAllAssociative();
 
         return $this->render('recruteur/offre/index.html.twig', [
             'controller_name' => 'OffreController',
@@ -95,6 +89,28 @@ class OffreController extends AbstractController
         $this->entityManager->flush();
 
         return $this->redirectToRoute('offre');
+
+    }
+
+    /**
+     * @Route("/detail_offre", name="detail_offre")
+     */
+    public function detail_offre(Request $request)
+    {
+        $sql = "SELECT detail FROM offre WHERE id = ".$request->request->get('id');
+        $connection = $this->entityManager->getConnection();
+        $statement = $connection->executeQuery($sql);
+        $offre = $statement->fetchAllAssociative();
+
+        foreach ($offre as $value) {
+            $detail = $value['detail'];
+        }
+
+        // Convertissez les données en JSON et créez une réponse JSON
+        $json = json_encode($detail);
+        $response = new JsonResponse($json, 200, [], true);
+
+        return $response;
 
     }
 }
