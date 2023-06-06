@@ -27,7 +27,7 @@ class SecurityUserController extends AbstractController
     public function registration(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
         $user = new User();
-
+         // changement ato
         $form= $this->createForm(RegistrationUserType::class,$user);
         // analyser la requete dans l'inscription
         $form->handleRequest($request);
