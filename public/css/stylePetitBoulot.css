@@ -1,0 +1,62 @@
+/* #054c58 couleur logo
+    #e99b18 couleur logo jaune
+*/
+header{
+    background-color: #054c58;
+    /* background-color: #F45050 ; */
+    box-shadow: 2px 6px 3px gray;
+}
+.logo{
+    width: 130px;
+    height: 130px;
+    border-radius: 100px;
+    margin: 15px;
+    margin-left: 60px;
+    border: 2px solid white;
+}
+.navhead{
+    display:flex;
+    flex-direction: row;
+}
+.navItem{
+    display: flex;
+    flex-direction: row;
+    width: -webkit-fill-available;
+}
+.navItem2{
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    width: -webkit-fill-available;
+}
+.item2{
+    margin-top: auto;
+    margin-bottom: 55px;
+    margin-right: 40px;
+    font-size: x-large;
+} 
+
+.btnhead1{
+    /* background-image: linear-gradient(90deg, #020024 0%, #090979 35%, #00d4ff 100%) !important; */
+    font-family:"Roboto Bold",arial,sans-serif;
+    color: rgb(76,81,111);
+    margin-top: -23px;
+}
+.btnhead2{
+    /* background-image: linear-gradient(90deg, #020024 0%, #090979 35%, #00d4ff 100%) !important; */
+    background-color: #054c58 !important;
+    font-family:"Roboto Bold",arial,sans-serif;
+    color: #e99b18;
+    margin-top: -23px;
+}
+
+.banniereJob{
+    width: -webkit-fill-available;
+    border: 1px solid black;
+    height: 320px;
+    margin-top: 5px;
+    background-attachment: scroll;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}

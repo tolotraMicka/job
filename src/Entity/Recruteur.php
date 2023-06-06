@@ -2,14 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\RecruteurRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\RecruteurRepository;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints as Assert;
-
-
 
 /**
  * @ORM\Entity(repositoryClass=RecruteurRepository::class)
@@ -33,11 +31,6 @@ class Recruteur implements UserInterface, PasswordAuthenticatedUserInterface
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=180, nullable=true)
-     */
-    private $username;
-
-    /**
      * @ORM\Column(type="json")
      */
     private $roles = [];
@@ -45,7 +38,7 @@ class Recruteur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
-     * @Assert\Length(min="8",minMessage="votre mot de passe doit contenir minimum 8 caractères")
+     * @Assert\Length(min="6",minMessage="votre mot de passe doit contenir minimum 6 caractères")
      */
     private $password;
 
@@ -55,26 +48,14 @@ class Recruteur implements UserInterface, PasswordAuthenticatedUserInterface
     public $confirm_password;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $nom;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $prenom;
-
-    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $societe;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=255)
      */
-    private $Type;
-
-
+    private $type;
 
     public function getId(): ?int
     {
@@ -108,14 +89,7 @@ class Recruteur implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUsername(): string
     {
-        return $this->username;
-    }
-
-    public function setUsername(string $username): self
-    {
-        $this->username = $username;
-
-        return $this;
+        return (string) $this->email;
     }
 
     /**
@@ -172,30 +146,6 @@ class Recruteur implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    public function getNom(): ?string
-    {
-        return $this->nom;
-    }
-
-    public function setNom(string $nom): self
-    {
-        $this->nom = $nom;
-
-        return $this;
-    }
-
-    public function getPrenom(): ?string
-    {
-        return $this->prenom;
-    }
-
-    public function setPrenom(?string $prenom): self
-    {
-        $this->prenom = $prenom;
-
-        return $this;
-    }
-
     public function getSociete(): ?string
     {
         return $this->societe;
@@ -208,16 +158,15 @@ class Recruteur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getType(): ?int
+    public function getType(): ?string
     {
-        return $this->Type;
+        return $this->type;
     }
 
-    public function setType(int $Type): self
+    public function setType(string $type): self
     {
-        $this->Type = $Type;
+        $this->type = $type;
 
         return $this;
     }
-
 }
