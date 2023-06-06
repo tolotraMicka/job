@@ -4,14 +4,14 @@
 
 {% block body %}
 
-
-{# {% if error %}
+<body id="body_login_user">
+  <div class="container">
+  
+  {# {% if error %}
     <div class="alert alert-danger">
         {{ error.messageKey|trans(error.messageData, 'security') }}
     </div>
 {% endif %} #}
-<body id="body_login_user">
-  <div class="container">
     <div class="row">
       <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
         <div class="card border-0 shadow rounded-3 my-5">
@@ -22,7 +22,7 @@
                   <div class="alert alert-danger">{{ flashMessage }}</div>
                 {% endfor %}
             </div>
-             <form action="{{path('app_connexion_user')}}" method="post">
+             <form action="{{path('app_connexion_recruteur')}}" method="post">
                 <div class="form-group m-2">
                     <input placeholder="e-mail" required name="_email" type="text" class="form-control">
                 </div>
