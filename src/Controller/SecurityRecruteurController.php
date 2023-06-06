@@ -29,7 +29,7 @@ class SecurityRecruteurController extends AbstractController
     public function registration(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
         $recruteur = new Recruteur();
-
+        // changement ato
         $form= $this->createForm(RegistrationRecruteurType::class,$recruteur);
         // analyser la requete dans l'inscription
         $form->handleRequest($request);
