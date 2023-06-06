@@ -63,9 +63,25 @@ class SecurityRecruteurController extends AbstractController
             if ($recruteur && $passwordEncoder->isPasswordValid($recruteur, $password)) {
                 $token = new UsernamePasswordToken($recruteur, null, "main",$recruteur->getRoles());
                 $tokenStorage->setToken($token);
+                
                 // Rediriger l'utilisateur vers la page d'accueil ou toute autre page souhaitée
-                return $this->redirectToRoute('app_home');
-            }else {
+                //vérifier si recruteur ou particulier
+                $sql = "SELECT type FROM recruteur
+                            WHERE email = '".$request->request->get('_email')."'";
+
+                $connection = $this->em->getConnection();
+                $statement = $connection->executeQuery($sql);
+                $recruteur = $statement->fetchAllAssociative();
+
+                if($recruteur[0]['type'] == 'recruteur') {
+                    return $this->redirectToRoute('app_home_recruteur');
+                }
+                else if($recruteur[0]['type'] == 'particulier') {
+                    return $this->redirectToRoute('app_home_particulier');
+                }
+
+
+            } else {
                 // Afficher un message d'erreur
                 $this->addFlash('error', 'email or mot de passe incorrect');
                 // Rediriger l'utilisateur vers la page de connexion

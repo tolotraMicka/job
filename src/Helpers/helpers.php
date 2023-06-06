@@ -9,7 +9,8 @@
         public function getFunctions()
         {
             return [
-                new TwigFunction('getDiffDate', [$this, 'getDiffDate'])
+                new TwigFunction('getDiffDate', [$this, 'getDiffDate']),
+                new TwigFunction('dateInFr', [$this, 'dateInFr']),
             ];
         }
 
@@ -20,6 +21,12 @@
 
             $interval = $date1->diff($date2);
             return $interval->format('%a');
+        }
+
+        public static function dateInFr($date) 
+        {
+            $date = new DateTime($date);
+            return $date->format('d/m/Y');
         }
     }
 

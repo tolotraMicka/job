@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Vos offres{% endblock %}
+{% block title %}Vos petis boulots{% endblock %}
 
 {% block body %}
-    {% include 'navbar.html.twig' %}
+    {% include 'navbar_p.html.twig' %}
     <style>
-        #offre {
+        #petit_boulot {
             box-shadow: 1px 2px 8px;
             width: 40%;
             margin: 1rem;
@@ -38,7 +38,7 @@
             display: flex;
             flex-direction: row;
         }
-        #container_detail {
+        #container_description {
             
         }
         #alert{
@@ -49,56 +49,57 @@
     <div id="alert"></div>
     <div id="container">
         <div id="liste">
-            {% for offre in variables['offres'] %}
-                <div id="offre">
-                    <h4 id="titre">{{ offre.titre }}</h4>
-                    <h5 id="societe">{{ offre.societe }}</h5>
-                    <h6 id="type">{{ offre.nom_type }}</h6>
-                    <div id="salaire">{{ offre.salaire_min }}$ - {{ offre.salaire_max }}$ </div>
+            {% for petit_boulot in variables['petit_boulots'] %}
+                <div id="petit_boulot">
+                    <h4 id="titre">{{ petit_boulot.titre }}</h4>
+                    <h5 id="societe">{{ petit_boulot.nom_recruteur }}</h5>
+                    <h6 id="type">{{ petit_boulot.nom_categorie}}</h6>
+                    <div id="salaire">{{ petit_boulot.salaire }}$ </div>
+                    <div id="date">Du {{ dateInFr(petit_boulot.date_debut) }} au {{ dateInFr(petit_boulot.date_fin) }} </div>
                     <div id="footer">
-                        <div id="date_publication">Publié depuis {{ getDiffDate(offre.date_publication) }} jours</div>
-                        <div><a href="#" onclick="voir_detail_offre({{ offre.id }})">Voir plus</a></div>
-                        <div><a href="{{ path('modifier_offre', {'id': offre.id}) }}">Modifier</a></div>
+                        <div id="date_publication">Publié depuis {{ getDiffDate(petit_boulot.date_publication) }} jours</div>
+                        <div><a href="#" onclick="voir_description_petit_boulot({{ petit_boulot.id }})">Voir plus</a></div> 
+                        <div><a href="{{ path('modifier_petit_boulot', {'id': petit_boulot.id}) }}">Modifier</a></div>
                         <div>
-                            {% if offre.done != 1 %}
-                                <a href="#" onclick="cloturer_offre({{ offre.id }})">Clôturer</a>
+                            {% if petit_boulot.done != 1 %}
+                                <a href="#" onclick="cloturer_petit_boulot({{ petit_boulot.id }})">Clôturer</a>
                             {% else %}
-                                <span id="cloturer"><strong>Cloturée</strong></span>
+                                <span id="cloturer"><strong>Cloturé</strong></span>
                             {% endif %}
                         </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
-        <div id="container_detail">
-            <div id="detail">
+        <div id="container_description">
+            <div id="description">
             
             <div>
         <div>
     </div>
     <script>
-        function voir_detail_offre(offreId) {
+        function voir_description_petit_boulot(petit_boulotId) {
             jQuery.ajax({
                 method: 'POST',
-                url: "{{ path('detail_offre') }}",
-                data: {id: offreId}
+                url: "{{ path('description_petit_boulot') }}",
+                data: {id: petit_boulotId}
             }).done(function (response) {
-                $("#container_detail").css({"box-shadow": "1px 1px 5px grey",
+                $("#container_description").css({"box-shadow": "1px 1px 5px grey",
                                         "width": "50%",
                                         "padding": "5rem",
                                         "margin-top": "1.5rem",
                                         "border-radius": "1rem",
                                         "margin-right": "1rem",
                                         "margin-bottom": "1rem"})
-                $("#detail").html(response);
+                $("#description").html(response);
             });
         }
 
-        function cloturer_offre(offreId) {
+        function cloturer_petit_boulot(petit_boulotId) {
             jQuery.ajax({
                 method: 'POST',
-                url: "{{ path('cloturer_offre') }}",
-                data: {id: offreId}
+                url: "{{ path('cloturer_petit_boulot') }}",
+                data: {id: petit_boulotId}
             }).done(function (response) {
                 const el = document.createElement('div');
                 el.setAttribute('class', 'alert alert-success');
