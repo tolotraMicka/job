@@ -52,6 +52,8 @@
                     <div id="footer">
                         <div id="date_publication">Publié depuis {{ getDiffDate(offre.date_publication) }} jours</div>
                         <div><a href="#" onclick="voir_detail_offre({{ offre.id }})">Voir plus</a></div>
+                        <div><a href="{{ path('modifier_offre', {'id': offre.id}) }}">Modifier</a></div>
+
                     </div>
                 </div>
             {% endfor %}

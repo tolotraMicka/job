@@ -111,6 +111,23 @@ class OffreController extends AbstractController
         $response = new JsonResponse($json, 200, [], true);
 
         return $response;
-
     }
+
+    /**
+     * @Route("/modifier_offre/{id}", name="modifier_offre")
+     */
+    public function update($id) 
+    {
+        $repository = $this->entityManager->getRepository(Type::class);
+        $results = $repository->findAll();
+
+        $repo = $this->entityManager->getRepository(Offre::class);
+        $offre = $repo->find($id);
+
+        return $this->render('recruteur/offre/create.html.twig', [
+            'controller_name' => 'OffreController',
+            'variables' => ['types' => $results, 'id' => $id, 'offre' => $offre]
+        ]);
+    }
+    
 }
