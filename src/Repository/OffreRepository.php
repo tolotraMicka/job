@@ -4,7 +4,9 @@ namespace App\Repository;
 
 use App\Entity\Offre;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * @extends ServiceEntityRepository<Offre>
@@ -16,8 +18,13 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class OffreRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $security;
+    private $entityManager;
+
+    public function __construct(ManagerRegistry $registry, Security $security, EntityManagerInterface $entityManager)
     {
+        $this->entityManager = $entityManager;
+        $this->security = $security;
         parent::__construct($registry, Offre::class);
     }
 
@@ -38,6 +45,31 @@ class OffreRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    public function selectOffre()
+    {
+        $sql = "SELECT offre.*, r.societe, type.nom as nom_type, offre.id as id FROM offre
+                LEFT JOIN recruteur r on r.id = offre.id_recruteur
+                LEFT JOIN type on type.id = offre.type 
+                WHERE id_recruteur = ".$this->security->getUser()->getId()." ";
+        $connection = $this->entityManager->getConnection();
+        $statement = $connection->executeQuery($sql);
+        $offres = $statement->fetchAllAssociative();
+
+        return $offres;
+    }
+
+    public function selectDetail($request)
+    {
+        $sql = "SELECT detail FROM offre WHERE id = ".$request->request->get('id');
+        $connection = $this->entityManager->getConnection();
+        $statement = $connection->executeQuery($sql);
+        $offre = $statement->fetchAllAssociative();
+
+        return $offre;
+    }
+
+    
 
 //    /**
 //     * @return Offre[] Returns an array of Offre objects

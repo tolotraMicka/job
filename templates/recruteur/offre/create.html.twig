@@ -20,6 +20,16 @@
         flex-direction: column;
         gap: 0.5rem;
     }
+    #ajout{
+        color: green;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+    #ajout_offre{
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+    }
 
 </style>
 <div id="div_form_offre">
@@ -30,6 +40,7 @@
             <input type="text" name="titre" class="form-control" id="titre" aria-describedby="titre" placeholder="Titre" {{ variables['id'] is defined ? "value=" ~ variables.offre.getTitre()|e ~ " " }}>
             <small id="titre" class="form-text text-muted">Intitulé de votre offre</small>
         </div>
+        {{ variables['liste_missions'] }}
         <div class="form-group">
             <label for="date_fin">Date de fin</label>
             <input type="date" name="date_fin" class="form-control" id="date_fin" placeholder="Date de fin">
@@ -66,4 +77,28 @@
         <button type="submit" class="btn btn-primary">Publier</button>
     </form>
 </div>
+<script>
+    function ajout_offre() {
+        // Sélectionner l'élément parent
+        var offresDiv = document.getElementById("offres");
+
+        // Créer le div conteneur
+        var containerDiv = document.createElement("div");
+        containerDiv.className = "form-group";
+
+        // Créer l'input
+        var input = document.createElement("input");
+        input.type = "text";
+        input.name = "missions[]";
+        input.className = "form-control";
+        input.id = "missions";
+        input.placeholder = "Missions";
+
+        // Ajouter le label et l'input au div conteneur
+        containerDiv.appendChild(input);
+
+        // Insérer le div conteneur après l'élément avec l'id "offres"
+        offresDiv.parentNode.insertBefore(containerDiv, offresDiv.nextSibling);
+    }
+</script>
 {% endblock %}

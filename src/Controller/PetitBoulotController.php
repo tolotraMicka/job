@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Request;
-
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class PetitBoulotController extends AbstractController
 {
@@ -64,6 +64,17 @@ class PetitBoulotController extends AbstractController
      */
     public function save(Request $request) 
     {
+        // $imageFile = $request->files->get('image');
+        // if ($imageFile instanceof UploadedFile) {
+        //     // Gérer l'importation de l'image ici
+        //     $imageName = $imageFile->getClientOriginalName();
+        //     $nom_image = uniqid() . '.' . $imageFile->guessExtension();
+        //     $imageFile->move(
+        //         $this->getParameter('images_directory_petitboulot'),
+        //         $nom_image
+        //     );
+        // }
+        
         $data = [
             'titre' => $request->request->get('titre'),
             'date_publication' => new DateTime(),
@@ -91,6 +102,8 @@ class PetitBoulotController extends AbstractController
         $petit_boulot->setCategorie($data['categorie']);
         $petit_boulot->setSalaire($data['salaire']);
         $petit_boulot->setIdRecruteur($data['id_recruteur']);
+        // $petit_boulot->setImage('images/petitboulot/'.$nom_image);
+        
         $petit_boulot->setDone(0);
         
         $this->entityManager->persist($petit_boulot);
@@ -104,19 +117,17 @@ class PetitBoulotController extends AbstractController
      */
     public function description_petit_boulot(Request $request)
     {
-        $sql = "SELECT description FROM petit_boulot WHERE id = ".$request->request->get('id');
+        $sql = "SELECT image,description FROM petit_boulot WHERE id = ".$request->request->get('id');
         $connection = $this->entityManager->getConnection();
         $statement = $connection->executeQuery($sql);
         $petit_boulot = $statement->fetchAllAssociative();
 
         foreach ($petit_boulot as $value) {
-            $description = $value['description'];
+            // Convertissez les données en JSON et créez une réponse JSON
+            $json = json_encode($value);
         }
 
-        // Convertissez les données en JSON et créez une réponse JSON
-        $json = json_encode($description);
         $response = new JsonResponse($json, 200, [], true);
-
         return $response;
     }
 
@@ -133,7 +144,7 @@ class PetitBoulotController extends AbstractController
         $this->entityManager->flush();
 
         // Convertissez les données en JSON et créez une réponse JSON
-        $json = json_encode("Petit boulot cloturée avec succès");
+        $json = json_encode("Petit boulot cloturé avec succès");
         $response = new JsonResponse($json, 200, [], true);
 
         return $response;
