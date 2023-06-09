@@ -1,0 +1,14 @@
+<div> Vos missions principales :
+    <ul>
+    {% for mission in variables['missions'] %}
+        <li>{{ mission.nom }}</li>
+    {% endfor %}
+    </ul>
+</div>
+<div> Les compétences exigées :
+    <ul>
+    {% for competence in variables['competences'] %}
+        <li>{{ competence.nom }}</li>
+    {% endfor %}
+    </ul>
+</div>

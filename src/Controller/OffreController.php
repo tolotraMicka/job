@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Competence;
 use App\Entity\Mission;
 use App\Entity\Offre;
 use App\Entity\Type;
@@ -55,9 +56,12 @@ class OffreController extends AbstractController
         //retourner un ajax pour la liste des missions
         $liste_missions = $this->listeMissions();
 
+        //retourner un ajax pour la liste des compétences
+        $liste_competences = $this->listeCompetences();
+
         return $this->render('recruteur/offre/create.html.twig', [
             'controller_name' => 'OffreController',
-            'variables' => ['types' => $results, 'liste_missions' => $liste_missions]
+            'variables' => ['types' => $results, 'liste_missions' => $liste_missions, 'liste_competences' => $liste_competences]
         ]);
     }
 
@@ -66,7 +70,6 @@ class OffreController extends AbstractController
      */
     public function save(Request $request) 
     {
-
         if($request->request->get('id') > 0) {
             //prendre l'offre qui existe dans la BDD
             $repo = $this->entityManager->getRepository(Offre::class);
@@ -90,9 +93,14 @@ class OffreController extends AbstractController
         $this->entityManager->persist($offre);
         $this->entityManager->flush();
 
-        //ajout dans la table mission
+        //prendre l'id de l'offre ajouté/mis à jour
         $offreId = $request->request->get('id') ? $request->request->get('id') : $offre->getId();
+
+        //ajout dans la table mission
         $this->ajoutMission($offreId, $request);
+
+        //ajout dans la table competence
+        $this->ajoutCompetence($offreId, $request);
 
         return $this->redirectToRoute('offre');
     }
@@ -109,13 +117,55 @@ class OffreController extends AbstractController
         }
         
         for ($i = 0; $i < count($request->request->get('missions')); $i++) {
-            $mission = new Mission();
-            $mission->setIdOffre($newOffreId);
-            $mission->setNom($request->request->get('missions')[$i]);
+            if($request->request->get('missions')[$i] != ""){
+                $mission = new Mission();
+                $mission->setIdOffre($newOffreId);
+                $mission->setNom($request->request->get('missions')[$i]);
+            
+                $this->entityManager->persist($mission);
+            }
+            else{
+                $repo = $this->entityManager->getRepository(Mission::class);
+                $missions = $repo->findBy(['id_offre' => $request->request->get('id')]);
+            
+                foreach ($missions as $mission) {
+                    $this->entityManager->remove($mission);
+                }
+            }
+        }
+
+        $this->entityManager->flush();
+    }
+
+    //ajout de competence par rapport à une offre
+    public function ajoutCompetence($newOffreId, $request) {
+        if ($request->request->get('id') > 0) {
+            $repo = $this->entityManager->getRepository(Competence::class);
+            $competences = $repo->findBy(['id_offre' => $request->request->get('id')]);
         
-            $this->entityManager->persist($mission);
+            foreach ($competences as $competence) {
+                $this->entityManager->remove($competence);
+            }
         }
         
+        for ($i = 0; $i < count($request->request->get('competences')); $i++) {
+            if($request->request->get('competences')[$i] != ""){
+                $competence = new competence();
+                $competence->setIdOffre($newOffreId);
+                $competence->setNom($request->request->get('competences')[$i]);
+            
+                $this->entityManager->persist($competence);
+            }
+            else{
+                $repo = $this->entityManager->getRepository(Competence::class);
+                $competences = $repo->findBy(['id_offre' => $request->request->get('id')]);
+            
+                foreach ($competences as $competence) {
+                    $this->entityManager->remove($competence);
+                }
+            }
+        }
+
         $this->entityManager->flush();
     }
 
@@ -124,23 +174,39 @@ class OffreController extends AbstractController
         $repo = $this->entityManager->getRepository(Mission::class);
         $liste_missions = $repo->findBy(['id_offre' => $id]);
 
-        return $this->render('recruteur/ajax/liste_missions.html.twig', [
+        return $this->renderView('recruteur/ajax/liste_missions.html.twig', [
             'controller_name' => 'OffreController',
             'variables' => ['liste_missions' => $liste_missions, 'id' => $id]
         ]);
     }
+
+    //selectionner les compétences d'une offre lors de la mise à jour
+    public function listeCompetences($id = NULL) {
+        $repo = $this->entityManager->getRepository(Competence::class);
+        $liste_competences = $repo->findBy(['id_offre' => $id]);
+
+        return $this->renderView('recruteur/ajax/liste_competences.html.twig', [
+            'controller_name' => 'OffreController',
+            'variables' => ['liste_competences' => $liste_competences, 'id' => $id]
+        ]);
+    }
+    
     /**
      * @Route("/detail_offre", name="detail_offre")
      */
     public function detail_offre(Request $request)
     {
-        $offre = $this->repository->selectDetail($request);
-        foreach ($offre as $value) {
-            $detail = $value['detail'];
-        }
+        $missions = $this->repository->selectMissionOfOffre($request);
+        $competences = $this->repository->selectCompetenceOfOffre($request);
+
+        $view = $this->renderView('recruteur/ajax/detail_offre.html.twig', [
+            'controller_name' => 'OffreController',
+            'variables' => ['missions' => $missions,
+                            'competences' => $competences]
+        ]);
 
         // Convertissez les données en JSON et créez une réponse JSON
-        $json = json_encode($detail);
+        $json = json_encode($view);
         $response = new JsonResponse($json, 200, [], true);
 
         return $response;
@@ -157,12 +223,19 @@ class OffreController extends AbstractController
         //retourner un ajax pour la liste des missions
         $liste_missions = $this->listeMissions($id);
 
+        //retourner un ajax pour la liste des competences
+        $liste_competences = $this->listeCompetences($id);
+
         $repo = $this->entityManager->getRepository(Offre::class);
         $offre = $repo->find($id);
 
         return $this->render('recruteur/offre/create.html.twig', [
             'controller_name' => 'OffreController',
-            'variables' => ['types' => $results, 'id' => $id, 'offre' => $offre, 'liste_missions' => $liste_missions]
+            'variables' => ['types' => $results, 
+                            'id' => $id, 
+                            'offre' => $offre, 
+                            'liste_missions' => $liste_missions, 
+                            'liste_competences' => $liste_competences]
         ]);
     }
 

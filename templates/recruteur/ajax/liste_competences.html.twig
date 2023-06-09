@@ -1,0 +1,21 @@
+{% if variables['id'] is not null and variables['liste_competences'] is not empty %}
+    <div class="form-group" id="competences">
+        {% for competence in variables['liste_competences'] %}
+            <div id="ajout_competence" class="ajout">
+                <label for="competences">Competences</label>
+                {% if loop.first %}
+                    <span id="ajout" onclick="ajout_competence()">+</span>
+                {% endif %}
+            </div>
+            <input type="text" name="competences[]" class="form-control" id="competences" aria-describedby="competences" placeholder="Competences" value="{{competence.nom}}">
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="form-group" id="competences">
+        <div id="ajout_competence" class="ajout">
+            <label for="competences">Competences</label>
+            <span id="ajout" onclick="ajout_competence()">+</span>
+        </div>
+        <input type="text" name="competences[]" class="form-control" id="competences" aria-describedby="competences" placeholder="Competences">
+    </div>
+{% endif %}

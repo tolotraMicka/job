@@ -59,14 +59,22 @@ class OffreRepository extends ServiceEntityRepository
         return $offres;
     }
 
-    public function selectDetail($request)
-    {
-        $sql = "SELECT detail FROM offre WHERE id = ".$request->request->get('id');
+    public function selectMissionOfOffre($request){
+        $sql = "SELECT nom FROM mission WHERE id_offre = ".$request->request->get('id');
         $connection = $this->entityManager->getConnection();
         $statement = $connection->executeQuery($sql);
-        $offre = $statement->fetchAllAssociative();
+        $missions = $statement->fetchAllAssociative();
 
-        return $offre;
+        return $missions;
+    }
+
+    public function selectCompetenceOfOffre($request){
+        $sql = "SELECT nom FROM competence WHERE id_offre = ".$request->request->get('id');
+        $connection = $this->entityManager->getConnection();
+        $statement = $connection->executeQuery($sql);
+        $competences = $statement->fetchAllAssociative();
+
+        return $competences;
     }
 
     
