@@ -11,6 +11,7 @@
             return [
                 new TwigFunction('getDiffDate', [$this, 'getDiffDate']),
                 new TwigFunction('dateInFr', [$this, 'dateInFr']),
+                new TwigFunction('tempsToString', [$this, 'tempsToString']),
             ];
         }
 
@@ -27,6 +28,17 @@
         {
             $date = new DateTime($date);
             return $date->format('d/m/Y');
+        }
+
+        public static function tempsToString($tempsInInt) {
+            switch ($tempsInInt) {
+                case 1:
+                    return "Temps partiel";
+                    break;
+                case 2:
+                    return "Temps plein";
+                    break;
+            }
         }
     }
 

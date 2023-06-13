@@ -46,12 +46,17 @@ class OffreRepository extends ServiceEntityRepository
         }
     }
 
-    public function selectOffre()
+    public function selectOffre($type = "", $conditionInParams ="")
     {
+        if($type == "User") {
+            $condition = " WHERE done <> 1 ";
+        }
+        else{
+            $condition = " WHERE id_recruteur = ".$this->security->getUser()->getId() ." ";
+        }
         $sql = "SELECT offre.*, r.societe, type.nom as nom_type, offre.id as id FROM offre
                 LEFT JOIN recruteur r on r.id = offre.id_recruteur
-                LEFT JOIN type on type.id = offre.type 
-                WHERE id_recruteur = ".$this->security->getUser()->getId()." ";
+                LEFT JOIN type on type.id = offre.type $condition $conditionInParams ";
         $connection = $this->entityManager->getConnection();
         $statement = $connection->executeQuery($sql);
         $offres = $statement->fetchAllAssociative();

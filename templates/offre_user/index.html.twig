@@ -1,0 +1,172 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Offres disponibles{% endblock %}
+
+{% block body %}
+    <style>
+        #offre {
+            box-shadow: 1px 2px 8px;
+            width: 40%;
+            margin: 1rem;
+            border-radius: 1rem;
+            padding: 2rem;
+        }
+        #salaire {
+            box-shadow: 1px 1px 5px grey;
+            background-color: #e9e9e2ba;
+            width: 50%;
+            border-radius: 5px;
+            font-style: italic;
+            padding-left: .5rem;
+        }
+        #date_publication {
+            margin-top: 2rem;
+            font-size: 13px;
+            color: grey;
+            font-style: italic;
+        }
+        #footer {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+        }
+        #liste{
+            width: 80%;
+        }
+        #container {
+            display: flex;
+            flex-direction: row;
+        }
+        #container_detail {
+            
+        }
+        #alert{
+            margin: auto;
+            padding: 1rem;
+        }
+        #row{
+            justify-content: center;
+        }
+        #form_offre{
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+    </style>
+    <div id="div_form_offre">
+        <form id="form_offre" action={{ path('offre_user') }} method="get">
+            <div class="row" id="row">
+                <div class="form-group col-md-3">
+                    <input type="text" name="mot_cle" class="form-control" id="mot_cle" placeholder="Métier, mot-clé ou entreprise">
+                </div>
+                {# <div class="form-group col-md-3">
+                    <input type="text" name="adresse" class="form-control" id="adresse" placeholder="Adresse">
+                </div> #}
+                <div class="form-group col-md-3">
+                    <button class="btn btn-primary">Rechercher</button>
+                </div>
+            </div>
+        </form>
+        <div class="row" id="row">
+            <div class="form-group col-md-2">
+                <select class="form-control" id="type" name="type" onchange="recherche_offre(this, 'type')">
+                    <option value="">Type de contrat</option>
+
+                    {% for type in variables['types'] %}
+                        <option value="{{ type.id }}">{{ type.nom }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group col-md-2">
+                <select class="form-control" id="temps" name="temps" onchange="recherche_offre(this, 'temps')">
+                    <option value="">Horaire</option>
+
+                    <option value="1">Temps partiel</option>
+                    <option value="2">Temps plein</option>
+                </select>
+            </div>
+            <div class="form-group col-md-2">
+                <select class="form-control" id="publication" name="publication" onchange="recherche_offre(this, 'publication')">
+                    <option value="">Date de publication</option>
+
+                    <option value="3">14 derniers jours</option>
+                    <option value="2">7 derniers jours</option>
+                    <option value="1">3 derniers jours</option>
+                </select>
+            </div>
+        </div>
+    <div>
+    <div id="container">
+        <div id="liste">
+            {% for offre in variables['offres'] %}
+                <div id="offre">
+                    <h4 id="titre">{{ offre.titre }}</h4>
+                    <h5 id="societe">{{ offre.societe }}</h5>
+                    <h6 id="type">{{ offre.nom_type }} - {{ tempsToString(offre.temps) }}</h6>
+                    <div id="salaire">{{ offre.salaire_min }}$ - {{ offre.salaire_max }}$ </div>
+                    <div id="footer">
+                        <div id="date_publication">Publié depuis {{ getDiffDate(offre.date_publication) }} jours</div>
+                        <div><a href="#" onclick="voir_detail_offre({{ offre.id }})">Voir plus</a></div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div id="container_detail">
+            <div id="detail">
+            
+            <div>
+        <div>
+    </div>
+    <script>
+        let params = {};
+        function voir_detail_offre(offreId) {
+            jQuery.ajax({
+                method: 'POST',
+                url: "{{ path('detail_offre') }}",
+                data: {id: offreId}
+            }).done(function (response) {
+                $("#container_detail").css({"box-shadow": "1px 1px 5px grey",
+                                        "width": "50%",
+                                        "padding": "5rem",
+                                        "margin-top": "1.5rem",
+                                        "border-radius": "1rem",
+                                        "margin-right": "1rem",
+                                        "margin-bottom": "1rem"})
+                $("#detail").html(response);
+            });
+        }
+
+        function cloturer_offre(offreId) {
+            jQuery.ajax({
+                method: 'POST',
+                url: "{{ path('cloturer_offre') }}",
+                data: {id: offreId}
+            }).done(function (response) {
+                const el = document.createElement('div');
+                el.setAttribute('class', 'alert alert-success');
+                el.setAttribute('role', 'alert');
+                el.textContent  = response;
+                const box = document.getElementById('alert');
+                box.appendChild(el);
+
+                setTimeout(function() {
+                    location.reload();
+                }, 5000); // 
+
+            });
+        }
+
+        function recherche_offre(val, nom) {
+            params[val.name] = val.value;
+            jQuery.ajax({
+                method: 'GET',
+                url: "{{ path('recherche_offre_user') }}",
+                data: params
+            }).done(function (response) {
+                $("#container").html(response);
+            });
+        }
+    </script>
+
+{% endblock %}
