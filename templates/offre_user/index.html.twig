@@ -108,6 +108,7 @@
                     <div id="footer">
                         <div id="date_publication">Publié depuis {{ getDiffDate(offre.date_publication) }} jours</div>
                         <div><a href="#" onclick="voir_detail_offre({{ offre.id }})">Voir plus</a></div>
+                        {# <div><a href="#" onclick="postuler_offre({{ offre.id }})" id="postuler">Postuler</a></div> #}
                     </div>
                 </div>
             {% endfor %}
@@ -137,6 +138,16 @@
             });
         }
 
+        function postuler_offre(offreId){
+            jQuery.ajax({
+                method: 'POST',
+                url: "{{ path('postuler_offre') }}",
+                data: {offre_id: offreId}
+            }).done(function (response) {
+                console.log(response)
+            });
+        }
+
         function cloturer_offre(offreId) {
             jQuery.ajax({
                 method: 'POST',
@@ -158,6 +169,7 @@
         }
 
         function recherche_offre(val, nom) {
+
             params[val.name] = val.value;
             jQuery.ajax({
                 method: 'GET',

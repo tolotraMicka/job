@@ -93,7 +93,7 @@ class OffreController extends AbstractController
         $this->entityManager->persist($offre);
         $this->entityManager->flush();
 
-        //prendre l'id de l'offre ajouté/mis à jour
+        //prendre l'id de l'offre ajoutée/mis à jour
         $offreId = $request->request->get('id') ? $request->request->get('id') : $offre->getId();
 
         //ajout dans la table mission

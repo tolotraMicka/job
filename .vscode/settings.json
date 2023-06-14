@@ -1,0 +1,11 @@
+{
+  "vsicons.associations.files": [
+    {
+      "icon": "twig",
+      "extensions": [
+        ".twig"
+      ],
+      "format": "svg"
+    }
+  ]
+}
