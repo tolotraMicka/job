@@ -1,0 +1,121 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vos petis boulots{% endblock %}
+
+{% block body %}
+    {% include 'navbar_p.html.twig' %}
+    <style>
+        #petit_boulot {
+            box-shadow: 1px 2px 8px;
+            width: 40%;
+            margin: 1rem;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin: auto;
+        }
+        #salaire {
+            box-shadow: 1px 1px 5px grey;
+            background-color: #e9e9e2ba;
+            width: 50%;
+            border-radius: 5px;
+            font-style: italic;
+            padding-left: .5rem;
+        }
+        #date_publication {
+            margin-top: 2rem;
+            font-size: 13px;
+            color: grey;
+            font-style: italic;
+        }
+        #footer {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+        }
+        #liste{
+            width: 80%;
+        }
+        #container {
+            display: flex;
+            flex-direction: row;
+        }
+        #container_description {
+            
+        }
+        #alert{
+            margin: auto;
+            padding: 1rem;
+        }
+    </style>
+    <div id="alert"></div>
+    <div id="container">
+        <div id="liste">
+            {% for petit_boulot in variables['petit_boulots'] %}
+                <div id="petit_boulot">
+                    <h4 id="titre">{{ petit_boulot.titre }}</h4>
+                    <h5 id="societe">{{ petit_boulot.nom_recruteur }}</h5>
+                    <h6 id="type">{{ petit_boulot.nom_categorie}}</h6>
+                    <div id="salaire">{{ petit_boulot.salaire }}$ </div>
+                    <div id="date">Du {{ dateInFr(petit_boulot.date_debut) }} au {{ dateInFr(petit_boulot.date_fin) }} </div>
+                    <div id="footer">
+                        <div id="date_publication">Publié depuis {{ getDiffDate(petit_boulot.date_publication) }} jours</div>
+                        <div><a href="#" onclick="voir_description_petit_boulot({{ petit_boulot.id }})">Voir plus</a></div> 
+                        <div><a href="{{ path('modifier_petit_boulot', {'id': petit_boulot.id}) }}">Modifier</a></div>
+                        <div>
+                            {% if petit_boulot.done != 1 %}
+                                <a href="#" onclick="cloturer_petit_boulot({{ petit_boulot.id }})">Clôturer</a>
+                            {% else %}
+                                <span id="cloturer"><strong>Cloturé</strong></span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div id="container_description">
+            <div id="description">
+            
+            <div>
+        <div>
+    </div>
+    <script>
+        function voir_description_petit_boulot(petit_boulotId) {
+            jQuery.ajax({
+                method: 'POST',
+                /* cible le controller PetitBoulotController function description_petit_boulot */
+                url: "{{ path('description_petit_boulot') }}",
+                data: {id: petit_boulotId}
+            }).done(function (response) {
+                $("#container_description").css({"box-shadow": "1px 1px 5px grey",
+                                        "width": "50%",
+                                        "padding": "5rem",
+                                        "margin-top": "1.5rem",
+                                        "border-radius": "1rem",
+                                        "margin-right": "1rem",
+                                        "margin-bottom": "1rem"})
+                $("#description").html(response);
+            });
+        }
+
+        function cloturer_petit_boulot(petit_boulotId) {
+            jQuery.ajax({
+                method: 'POST',
+                url: "{{ path('cloturer_petit_boulot') }}",
+                data: {id: petit_boulotId}
+            }).done(function (response) {
+                const el = document.createElement('div');
+                el.setAttribute('class', 'alert alert-success');
+                el.setAttribute('role', 'alert');
+                el.textContent  = response;
+                const box = document.getElementById('alert');
+                box.appendChild(el);
+
+                setTimeout(function() {
+                    el.remove();
+                }, 5000); // 
+
+            });
+        }
+    </script>
+
+{% endblock %}

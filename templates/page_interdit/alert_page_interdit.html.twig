@@ -1,0 +1,26 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+        <style>
+            .alert_message{
+                text-align:center;
+                font-family: cambria sans-serif;
+                color:red;
+            }
+            .block_alert{
+                display: flex;
+                justify-content: center;
+                margin-top: 10%;
+            }
+            .img_alert{
+                width: 15%;
+            }
+        </style>
+
+    <div class="container">
+        <div class="block_alert">
+            <img class="img_alert"src="{{asset("image/alert.png")}}">
+        </div>
+        <h1 class="alert_message"> Vous n'avez pas accès à cette page </h1>
+    </div>
+{% endblock %}

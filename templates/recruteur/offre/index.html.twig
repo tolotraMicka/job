@@ -3,6 +3,7 @@
 {% block title %}Vos offres{% endblock %}
 
 {% block body %}
+    {% include 'navbar.html.twig' %}
     <style>
         #offre {
             box-shadow: 1px 2px 8px;
@@ -40,7 +41,12 @@
         #container_detail {
             
         }
+        #alert{
+            margin: auto;
+            padding: 1rem;
+        }
     </style>
+    <div id="alert"></div>
     <div id="container">
         <div id="liste">
             {% for offre in variables['offres'] %}
@@ -53,7 +59,13 @@
                         <div id="date_publication">Publié depuis {{ getDiffDate(offre.date_publication) }} jours</div>
                         <div><a href="#" onclick="voir_detail_offre({{ offre.id }})">Voir plus</a></div>
                         <div><a href="{{ path('modifier_offre', {'id': offre.id}) }}">Modifier</a></div>
-
+                        <div>
+                            {% if offre.done != 1 %}
+                                <a href="#" onclick="cloturer_offre({{ offre.id }})">Clôturer</a>
+                            {% else %}
+                                <span id="cloturer"><strong>Cloturée</strong></span>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             {% endfor %}
@@ -80,7 +92,26 @@
                                         "margin-bottom": "1rem"})
                 $("#detail").html(response);
             });
+        }
 
+        function cloturer_offre(offreId) {
+            jQuery.ajax({
+                method: 'POST',
+                url: "{{ path('cloturer_offre') }}",
+                data: {id: offreId}
+            }).done(function (response) {
+                const el = document.createElement('div');
+                el.setAttribute('class', 'alert alert-success');
+                el.setAttribute('role', 'alert');
+                el.textContent  = response;
+                const box = document.getElementById('alert');
+                box.appendChild(el);
+
+                setTimeout(function() {
+                    el.remove();
+                }, 5000); // 
+
+            });
         }
     </script>
 

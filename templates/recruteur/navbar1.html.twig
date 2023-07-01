@@ -1,0 +1,27 @@
+<style>
+    #navbar{
+        padding-left: 1rem;
+    }
+</style>
+<nav class="navbar navbar-expand-lg navbar-light bg-light" id="navbar">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="{{path('app_home_recruteur')}}">Accueil <span class="sr-only"></span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{path('offre')}}">Liste de vos offres</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{path('creer_app_offre')}}">Ajouter une offre</a>
+            </li>
+        </ul>
+    </div>
+    <div>
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="{{path('app_deconnexion')}}">Se deconnecter</a>
+            </li>
+        </ul>
+    </div>
+</nav>

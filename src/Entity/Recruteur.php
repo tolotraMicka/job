@@ -99,7 +99,6 @@ class Recruteur implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_RECRUTEUR';
 
         return array_unique($roles);
     }

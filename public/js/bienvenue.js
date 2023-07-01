@@ -1,3 +1,4 @@
+/**--------------------------dropdown navbar page home --------------------------------- */
 var drop_Recherche = document.getElementById("drop-menu");
 var dropResearch = document.getElementById("dropdown");
 
@@ -7,8 +8,6 @@ var dropResearch = document.getElementById("dropdown");
 }
 
 /* dropdown close after click on window*/
-window.onclick = function (e) {
-   if (!e.target.matches('.dropdown')) {
-      drop_Recherche.style.display="none";
-   }
- }
+
+/**-------------------------------------------------------------*/
+

@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Form;
+
+use App\Entity\Posteur;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+class PosteurType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder
+        ->add('email')
+        // ->add('roles')
+        ->add('type',ChoiceType::class,[
+            'choices'  => [
+                '' => ' ',
+                'recruteur' => 'recruteur',
+                'particulier' => 'particulier',
+            ],
+        ])
+        ->add('password',PasswordType::class)
+        ->add('confirm_password',PasswordType::class);
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => Posteur::class,
+        ]);
+    }
+}

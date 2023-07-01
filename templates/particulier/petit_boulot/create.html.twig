@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}Creation petit boulot{% endblock %}
+
+{% block body %}
+    {% include 'navbar_p.html.twig' %}
+
+<style>
+    #div_form_petit_boulot{
+        border: 1px solid mistyrose;
+        width: 40%;
+        padding: 1.5rem;
+        margin-top: 1rem;
+        border-radius: 0.5rem;
+        margin-left: 2rem;
+        box-shadow: 1px 1px 5px 1px currentColor;
+    }
+    #form_petit_boulot {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    #date{
+        display: flex;
+        justify-content: space-between;
+    }
+</style>
+<div id="div_form_petit_boulot">
+    <form id="form_petit_boulot" action="{{path('sauvegarder_petit_boulot')}}" method="post">
+        <div class="form-group">
+            <label for="titre">Titre du job</label>
+            <input type="text" name="id" hidden class="form-control" id="id" aria-describedby="id" placeholder="id" {{ variables['id'] is defined ? "value=" ~ variables.petit_boulot.getId()|e ~ " " }}>
+            <input type="text" name="titre" class="form-control" id="titre" aria-describedby="titre" placeholder="Titre" {{ variables['id'] is defined ? "value=" ~ variables.petit_boulot.getTitre()|e ~ " " }}>
+            <small id="titre" class="form-text text-muted">Intitulé du job</small>
+        </div>
+        <div class="form-group" id="date">
+            <div>
+                <label for="date_debut">Date de debut</label>
+                <input type="date" name="date_debut" class="form-control" id="date_debut" placeholder="Date de debut">
+                <small id="titre" class="form-text text-muted">Date de début du contrat</small>
+            </div>
+            <div>
+                <label for="date_fin">Date de fin</label>
+                <input type="date" name="date_fin" class="form-control" id="date_fin" placeholder="Date de fin">
+                <small id="titre" class="form-text text-muted">Date de fin du contrat</small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="categorie">Categorie</label>
+            <select class="form-control" id="categorie" name="categorie">
+                {% for categorie in variables['categories'] %}
+                    <option value="{{ categorie.id }}" {{ variables['id'] is defined and categorie.id == variables.petit_boulot.getCategorie() ? "selected" : ""}}>{{ categorie.nom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" rows="3" name="description"> {{ variables['id'] is defined ? variables.petit_boulot.getDescription()|e }}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="salaire">Salaire par heure</label>
+            <input type="number" name="salaire" class="form-control" id="salaire" aria-describedby="titre" placeholder="Salaire" {{ variables['id'] is defined ? "value=" ~ variables.petit_boulot.getSalaire()|e ~ " " }}>
+        </div>
+
+        <button type="submit" class="btn btn-secondary">Proposer</button>
+    </form>
+</div>
+{% endblock %}

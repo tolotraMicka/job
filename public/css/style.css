@@ -300,3 +300,77 @@ header{
     display: flex;
     justify-content: center;
   }
+/*----------------------------------espace particulier sur navbar_p.html.twig sidebar et navbar----------------------------------------*/
+#dropmenu_particulier{
+    margin: 5px; 
+}
+.list-group .list-item{
+    list-style-type: none;
+}
+.list-group .list-item:hover{
+   background-color: #212529;
+}
+.dropdown-menus{
+    display: none;
+    position: absolute;
+    top: 82px;
+    right: 0px;
+    width: 130px;
+    background: #212529; 
+}
+.image_particulier{
+    display: flex!important;
+    justify-content: end;
+    width: -webkit-fill-available;
+}
+.fas, .fa-solid{
+    position: absolute;
+    bottom: 7px;
+    color: white;
+    margin: 1px;
+    margin-left: 2px
+}
+.dropdown-item{
+    margin: 1px;
+    margin-left: 7px;
+    
+}
+.dropdown_item_particulier:hover{
+    background-color: #212529;
+    width: -webkit-fill-available;
+}
+
+
+.sidebar {
+    height: 100%;
+    width: 175px;
+    position: fixed;
+    z-index: 1;
+    top: 85px;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    padding-top: 16px;
+}
+  
+.sidebar a {
+    padding: 10px 7px 15px 14px;
+    text-decoration: none;
+    font-size: 20px;
+    color: #818181;
+    display: block;
+}
+  
+.sidebar a:hover {
+    color: #f1f1f1;
+}
+  
+.main {
+    margin-left: 160px; /* Same as the width of the sidenav */
+    padding: 0px 10px;
+}
+  
+@media screen and (max-height: 450px) {
+    .sidebar {padding-top: 15px;}
+    .sidebar a {font-size: 18px;}
+}

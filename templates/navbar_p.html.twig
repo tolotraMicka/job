@@ -1,0 +1,60 @@
+<style>
+    #navbar{
+        padding-left: 1rem;
+        background-color: mistyrose;
+    }
+</style>
+{# <nav class="navbar navbar-expand-lg navbar-light" id="navbar">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="{{path('app_home_particulier')}}">Particulier (home) <span class="sr-only"></span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{path('app_petit_boulot')}}">Liste de vos petits boulots</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{path('creer_petit_boulot')}}">Ajouter un petit boulot</a>
+            </li>
+        </ul>
+    </div>
+    <div>
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="{{path('app_deconnexion')}}">Se deconnecter</a>
+            </li>
+        </ul>
+    </div>
+</nav> #}
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand h2" href="{{path('app_home_particulier')}}">Espace Particulier</a>
+    <div class="collapse navbar-collapse">
+      {# <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{{path('app_petit_boulot')}}">Liste </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{path('creer_petit_boulot')}}">Ajouter</a>
+        </li>
+      </ul> #}
+      <div class="d-flex image_particulier">
+        <a class="navbar-brand" id="dropdown-image" href="#">
+            <img src="{{asset('image/images.jpg')}}" alt="" style="width:60px; height:60px;" class="rounded-circle bg-danger"> 
+        </a>
+        <div class="dropdown-menus" id="dropmenu_particulier">
+          <ul class="list-group">
+            <li class="list-item"><a class="dropdown-item text-light dropdown_item_particulier" href="#">-----</a></li>
+            <li class="list-item"><a class="dropdown-item text-light dropdown_item_particulier" href="#">-----</a></li>
+            <li class="list-item"><i class="fab fa-solid fa-right-from-bracket text-danger"></i><a class="dropdown-item text-light dropdown_item_particulier" href="{{path('app_deconnexion')}}">Déconnexion</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+<div class="sidebar">
+  <a href="{{path('app_home_particulier')}}"><i class="fa fa-fw fa-home"></i> Home</a>
+  <a class="nav-link" href="{{path('app_petit_boulot')}}"><i class="fa fa-list-ul"></i> Liste </a>
+  <a class="nav-link" href="{{path('creer_petit_boulot')}}"><i class="fa fa-fw fa-user"></i> Ajouter</a>
+</div>

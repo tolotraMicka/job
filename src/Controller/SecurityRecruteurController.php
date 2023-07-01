@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-
+use App\Entity\Particulier;
 use App\Entity\Recruteur;
 use App\Form\RegistrationRecruteurType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,13 +29,20 @@ class SecurityRecruteurController extends AbstractController
     public function registration(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
         $recruteur = new Recruteur();
-
+        $roles=["ROLE_RECRUTEUR","ROLE_PARTICULIER"];
+    
+        // changement ato
         $form= $this->createForm(RegistrationRecruteurType::class,$recruteur);
         // analyser la requete dans l'inscription
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
+            
             $hash= $encoder->encodePassword($recruteur, $recruteur->getPassword());
             $recruteur->setPassword($hash);
+            $type=$request->request->get("registration_recruteur")["type"];
+            // dd($request,$type);
+            $type =="recruteur" ? $recruteur->setRoles([$roles[0]]) : $recruteur->setRoles([$roles[1]]);  
+
             $this->em->persist($recruteur);
             $this->em->flush();
 
@@ -63,11 +70,27 @@ class SecurityRecruteurController extends AbstractController
             if ($recruteur && $passwordEncoder->isPasswordValid($recruteur, $password)) {
                 $token = new UsernamePasswordToken($recruteur, null, "main",$recruteur->getRoles());
                 $tokenStorage->setToken($token);
+                
                 // Rediriger l'utilisateur vers la page d'accueil ou toute autre page souhaitée
-                return $this->redirectToRoute('app_home');
-            }else {
+                //vérifier si recruteur ou particulier
+                $sql = "SELECT type FROM recruteur
+                            WHERE email = '".$request->request->get('_email')."'";
+
+                $connection = $this->em->getConnection();
+                $statement = $connection->executeQuery($sql);
+                $recruteur = $statement->fetchAllAssociative();
+
+                if($recruteur[0]['type'] == 'recruteur') {
+                    return $this->redirectToRoute('app_home_recruteur');
+                }
+                else if($recruteur[0]['type'] == 'particulier') {
+                    return $this->redirectToRoute('app_home_particulier');
+                }
+
+
+            } else {
                 // Afficher un message d'erreur
-                $this->addFlash('error', 'email or mot de passe incorrect');
+                $this->addFlash('error', 'email ou mot de passe incorrect');
                 // Rediriger l'utilisateur vers la page de connexion
                 return $this->redirectToRoute('app_connexion_recruteur');
             }
@@ -82,6 +105,14 @@ class SecurityRecruteurController extends AbstractController
            
         ]);
     }
+
+    /**
+     * @Route("/page_interdite", name="page_interdite")
+     */
+    public function pageInterdit() :Response{
+        return $this->render("page_interdit/alert_page_interdit.html.twig",[]);
+    }
+
 
      /**
      * @Route("/deconnexion", name="app_deconnexion")

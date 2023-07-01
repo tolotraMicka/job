@@ -27,7 +27,7 @@ class SecurityUserController extends AbstractController
     public function registration(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
         $user = new User();
-
+         // changement ato
         $form= $this->createForm(RegistrationUserType::class,$user);
         // analyser la requete dans l'inscription
         $form->handleRequest($request);
@@ -55,7 +55,7 @@ class SecurityUserController extends AbstractController
                 $email = $request->request->get('_email');
                 $password = $request->request->get('_password');
        
-        // Récupérer l'utilisateur correspondant à l'email
+                // Récupérer l'utilisateur correspondant à l'email
                 $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['email' => $email]);
                 // dd($user);
             if ($user && $passwordEncoder->isPasswordValid($user, $password)) {
@@ -65,7 +65,7 @@ class SecurityUserController extends AbstractController
                 return $this->redirectToRoute('app_home');
             }else {
                 // Afficher un message d'erreur
-                $this->addFlash('error', 'email or mot de passe incorrect');
+                $this->addFlash('error', 'email ou mot de passe incorrect');
                 // Rediriger l'utilisateur vers la page de connexion
                 return $this->redirectToRoute('app_connexion_user');
             }
