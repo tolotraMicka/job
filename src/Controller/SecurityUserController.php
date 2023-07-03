@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Candidats;
 use App\Entity\User;
 use App\Form\RegistrationUserType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,13 +28,23 @@ class SecurityUserController extends AbstractController
     public function registration(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
         $user = new User();
-         // changement ato
+        $user_candidat= new Candidats();
+        $roles=["ROLE_CANDIDAT","ROLE_JOBBEUR"];
         $form= $this->createForm(RegistrationUserType::class,$user);
         // analyser la requete dans l'inscription
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
             $hash= $encoder->encodePassword($user, $user->getPassword());
             $user->setPassword($hash);
+        
+            $type=$request->request->get("registration_user")["type"];
+            // dd($request,$type);
+            if($type =="candidat"){
+                $user->setRoles([$roles[0]]);
+            }
+            if($type =="jobbeur"){
+                $user->setRoles([$roles[1]]);
+            } 
             $this->em->persist($user);
             $this->em->flush();
 

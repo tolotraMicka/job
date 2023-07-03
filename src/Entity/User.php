@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -46,6 +48,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public $confirm_password;
 
+    public $type;
     /**
      * @ORM\Column(type="string", length=255)
      */
@@ -57,14 +60,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $prenom;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\OneToMany(targetEntity=Jobbeurs::class, mappedBy="chercheur")
      */
-    private $societe;
+    private $jobbeurs;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\OneToMany(targetEntity=Candidats::class, mappedBy="chercheur")
      */
-    private $type;
+    private $candidats;
+
+    public function __construct()
+    {
+        $this->jobbeurs = new ArrayCollection();
+        $this->candidats = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -107,8 +116,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }
@@ -179,27 +186,64 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getSociete(): ?string
+    /**
+     * @return Collection<int, Jobbeurs>
+     */
+    public function getJobbeurs(): Collection
     {
-        return $this->societe;
+        return $this->jobbeurs;
     }
 
-    public function setSociete(?string $societe): self
+    public function addJobbeur(Jobbeurs $jobbeur): self
     {
-        $this->societe = $societe;
+        if (!$this->jobbeurs->contains($jobbeur)) {
+            $this->jobbeurs[] = $jobbeur;
+            $jobbeur->setChercheur($this);
+        }
 
         return $this;
     }
 
-    public function getType(): ?string
+    public function removeJobbeur(Jobbeurs $jobbeur): self
     {
-        return $this->type;
-    }
-
-    public function setType(string $type): self
-    {
-        $this->type = $type;
+        if ($this->jobbeurs->removeElement($jobbeur)) {
+            // set the owning side to null (unless already changed)
+            if ($jobbeur->getChercheur() === $this) {
+                $jobbeur->setChercheur(null);
+            }
+        }
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Candidats>
+     */
+    public function getCandidats(): Collection
+    {
+        return $this->candidats;
+    }
+
+    public function addCandidat(Candidats $candidat): self
+    {
+        if (!$this->candidats->contains($candidat)) {
+            $this->candidats[] = $candidat;
+            $candidat->setChercheur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCandidat(Candidats $candidat): self
+    {
+        if ($this->candidats->removeElement($candidat)) {
+            // set the owning side to null (unless already changed)
+            if ($candidat->getChercheur() === $this) {
+                $candidat->setChercheur(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

@@ -1,7 +1,7 @@
 security:
-    # encoders:
-    #     App\Entity\User:
-    #         algorithm: bcrypt
+    encoders:
+        App\Entity\User:
+            algorithm: bcrypt
 
     enable_authenticator_manager: true
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
@@ -12,18 +12,14 @@ security:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
-                class: App\Entity\Candidats
+                class: App\Entity\User
                 property: email
         
         app_recruteur_provider:
             entity:
                 class: App\Entity\Recruteur
                 property: email
-        # used to reload user from session & other features (e.g. switch_user)
-        # used to reload user from session & other features (e.g. switch_user)
-        # used to reload user from session & other features (e.g. switch_user)
-        # used to reload user from session & other features (e.g. switch_user)
-        # used to reload user from session & other features (e.g. switch_user)
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/

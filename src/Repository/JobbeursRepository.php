@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\Candidats;
+use App\Entity\Jobbeurs;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
@@ -10,21 +10,21 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
 /**
- * @extends ServiceEntityRepository<Candidats>
+ * @extends ServiceEntityRepository<Jobbeurs>
  *
- * @method Candidats|null find($id, $lockMode = null, $lockVersion = null)
- * @method Candidats|null findOneBy(array $criteria, array $orderBy = null)
- * @method Candidats[]    findAll()
- * @method Candidats[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Jobbeurs|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Jobbeurs|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Jobbeurs[]    findAll()
+ * @method Jobbeurs[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CandidatsRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
+class JobbeursRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Candidats::class);
+        parent::__construct($registry, Jobbeurs::class);
     }
 
-    public function add(Candidats $entity, bool $flush = false): void
+    public function add(Jobbeurs $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -33,7 +33,7 @@ class CandidatsRepository extends ServiceEntityRepository implements PasswordUpg
         }
     }
 
-    public function remove(Candidats $entity, bool $flush = false): void
+    public function remove(Jobbeurs $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -47,39 +47,34 @@ class CandidatsRepository extends ServiceEntityRepository implements PasswordUpg
      */
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
-        if (!$user instanceof Candidats) {
+        if (!$user instanceof Jobbeurs) {
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
         }
 
-        // $user->setPassword($newHashedPassword);
+        $user->setPassword($newHashedPassword);
 
         $this->add($user, true);
     }
 
-    // public function find_id_user(): array{
-    //     return $this->createQueryBuilder('c')
-    //         ->getQuery()
-    //         ->getResult();
-    // }
 //    /**
-//     * @return Candidats[] Returns an array of Candidats objects
+//     * @return Jobbeurs[] Returns an array of Jobbeurs objects
 //     */
 //    public function findByExampleField($value): array
 //    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
+//        return $this->createQueryBuilder('j')
+//            ->andWhere('j.exampleField = :val')
 //            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
+//            ->orderBy('j.id', 'ASC')
 //            ->setMaxResults(10)
 //            ->getQuery()
 //            ->getResult()
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Candidats
+//    public function findOneBySomeField($value): ?Jobbeurs
 //    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
+//        return $this->createQueryBuilder('j')
+//            ->andWhere('j.exampleField = :val')
 //            ->setParameter('val', $value)
 //            ->getQuery()
 //            ->getOneOrNullResult()

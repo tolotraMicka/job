@@ -2,17 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\CandidatsRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Repository\JobbeursRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @ORM\Entity(repositoryClass=CandidatsRepository::class)
+ * @ORM\Entity(repositoryClass=JobbeursRepository::class)
  */
-class Candidats
+class Jobbeurs
 {
     /**
      * @ORM\Id
@@ -24,15 +22,10 @@ class Candidats
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $experience;
+    private $competences;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $cv;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="candidats")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="jobbeurs")
      */
     private $chercheur;
 
@@ -41,26 +34,14 @@ class Candidats
         return $this->id;
     }
 
-    public function getExperience(): ?string
+    public function getCompetences(): ?string
     {
-        return $this->experience;
+        return $this->competences;
     }
 
-    public function setExperience(?string $experience): self
+    public function setCompetences(?string $competences): self
     {
-        $this->experience = $experience;
-
-        return $this;
-    }
-
-    public function getCv(): ?string
-    {
-        return $this->cv;
-    }
-
-    public function setCv(?string $cv): self
-    {
-        $this->cv = $cv;
+        $this->competences = $competences;
 
         return $this;
     }
