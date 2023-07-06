@@ -4,7 +4,9 @@ namespace App\Repository;
 
 use App\Entity\Offre;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * @extends ServiceEntityRepository<Offre>
@@ -16,8 +18,13 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class OffreRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $security;
+    private $entityManager;
+
+    public function __construct(ManagerRegistry $registry, Security $security, EntityManagerInterface $entityManager)
     {
+        $this->entityManager = $entityManager;
+        $this->security = $security;
         parent::__construct($registry, Offre::class);
     }
 
@@ -38,6 +45,44 @@ class OffreRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    public function selectOffre($type = "", $conditionInParams ="")
+    {
+        if($type == "User") {
+            $condition = " WHERE done <> 1 ";
+        }
+        else{
+            $condition = " WHERE id_recruteur = ".$this->security->getUser()->getId() ." ";
+        }
+        $sql = "SELECT offre.*, r.societe, type.nom as nom_type, offre.id as id FROM offre
+                LEFT JOIN recruteur r on r.id = offre.id_recruteur
+                LEFT JOIN type on type.id = offre.type $condition $conditionInParams ";
+        $connection = $this->entityManager->getConnection();
+        $statement = $connection->executeQuery($sql);
+        $offres = $statement->fetchAllAssociative();
+
+        return $offres;
+    }
+
+    public function selectMissionOfOffre($request){
+        $sql = "SELECT nom FROM mission WHERE id_offre = ".$request->request->get('id');
+        $connection = $this->entityManager->getConnection();
+        $statement = $connection->executeQuery($sql);
+        $missions = $statement->fetchAllAssociative();
+
+        return $missions;
+    }
+
+    public function selectCompetenceOfOffre($request){
+        $sql = "SELECT nom FROM competence WHERE id_offre = ".$request->request->get('id');
+        $connection = $this->entityManager->getConnection();
+        $statement = $connection->executeQuery($sql);
+        $competences = $statement->fetchAllAssociative();
+
+        return $competences;
+    }
+
+    
 
 //    /**
 //     * @return Offre[] Returns an array of Offre objects

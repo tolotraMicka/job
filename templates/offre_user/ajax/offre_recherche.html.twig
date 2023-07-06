@@ -1,0 +1,19 @@
+<div id="liste">
+    {% for offre in variables['offres'] %}
+        <div id="offre">
+            <h4 id="titre">{{ offre.titre }}</h4>
+            <h5 id="societe">{{ offre.societe }}</h5>
+            <h6 id="type">{{ offre.nom_type }} - {{ tempsToString(offre.temps) }}</h6>
+            <div id="salaire">{{ offre.salaire_min }}$ - {{ offre.salaire_max }}$ </div>
+            <div id="footer">
+                <div id="date_publication">Publié depuis {{ getDiffDate(offre.date_publication) }} jours</div>
+                <div><a href="#" onclick="voir_detail_offre({{ offre.id }})">Voir plus</a></div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+<div id="container_detail">
+    <div id="detail">
+    
+    <div>
+<div>

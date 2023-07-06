@@ -73,10 +73,11 @@
             {% endfor %}
         </div>
         <div id="container_description">
-            <div id="description">
-            
-            <div>
-        <div>
+            {# <div id="container_image">
+                <img id="image"></img>
+            </div> #}
+            <div id="description"></div>
+        </div>
     </div>
     <script>
         function voir_description_petit_boulot(petit_boulotId) {
@@ -93,7 +94,8 @@
                                         "border-radius": "1rem",
                                         "margin-right": "1rem",
                                         "margin-bottom": "1rem"})
-                $("#description").html(response);
+                $("#description").html(response.description);
+                //$("#image").attr("src", response.image);
             });
         }
 
@@ -111,8 +113,9 @@
                 box.appendChild(el);
 
                 setTimeout(function() {
-                    el.remove();
+                    location.reload();
                 }, 5000); // 
+                
 
             });
         }

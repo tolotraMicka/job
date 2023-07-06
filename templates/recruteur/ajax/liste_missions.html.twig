@@ -1,0 +1,22 @@
+{% if variables['id'] is not null and variables['liste_missions'] is not empty %}
+    <div class="form-group" id="offres">
+        {% for mission in variables['liste_missions'] %}
+            <div id="ajout_mission" class="ajout">
+                <label for="missions">Missions</label>
+                {% if loop.first %}
+                    <span id="ajout" onclick="ajout_mission()">+</span>
+                {% endif %}
+            </div>
+            <input type="text" name="missions[]" class="form-control" id="missions" aria-describedby="missions" placeholder="Missions" value="{{mission.nom}}">
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="form-group" id="offres">
+        <div id="ajout_mission" class="ajout">
+            <label for="missions">Missions</label>
+            <span id="ajout" onclick="ajout_mission()">+</span>
+        </div>
+        <input type="text" name="missions[]" class="form-control" id="missions" aria-describedby="missions" placeholder="Missions">
+    </div>
+{% endif %}
+

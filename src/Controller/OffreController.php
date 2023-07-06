@@ -2,13 +2,18 @@
 
 namespace App\Controller;
 
+use App\Entity\Competence;
+use App\Entity\Mission;
 use App\Entity\Offre;
 use App\Entity\Type;
+use App\Repository\OffreRepository;
 use DateTime as GlobalDateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,24 +22,22 @@ class OffreController extends AbstractController
 {
     private $entityManager;
     private $security;
+    private $registry;
+    private $repository;
 
-    public function __construct(EntityManagerInterface $entityManager, Security $security)
+    public function __construct(EntityManagerInterface $entityManager, Security $security, ManagerRegistry $registry)
     {
+        $this->repository = new OffreRepository($registry,$security,$entityManager);
         $this->entityManager = $entityManager;
         $this->security = $security;
+        $this->registry = $registry;
     }
     /**
      * @Route("/offre", name="offre")
      */
     public function index(): Response
     {
-        $sql = "SELECT offre.*, r.societe, type.nom as nom_type, offre.id as id FROM offre
-                LEFT JOIN recruteur r on r.id = offre.id_recruteur
-                LEFT JOIN type on type.id = offre.type 
-                WHERE id_recruteur = ".$this->security->getUser()->getId()." ";
-        $connection = $this->entityManager->getConnection();
-        $statement = $connection->executeQuery($sql);
-        $offres = $statement->fetchAllAssociative();
+        $offres = $this->repository->selectOffre();
 
         return $this->render('recruteur/offre/index.html.twig', [
             'controller_name' => 'OffreController',
@@ -50,9 +53,15 @@ class OffreController extends AbstractController
         $repository = $this->entityManager->getRepository(Type::class);
         $results = $repository->findAll();
 
+        //retourner un ajax pour la liste des missions
+        $liste_missions = $this->listeMissions();
+
+        //retourner un ajax pour la liste des compétences
+        $liste_competences = $this->listeCompetences();
+
         return $this->render('recruteur/offre/create.html.twig', [
             'controller_name' => 'OffreController',
-            'variables' => ['types' => $results]
+            'variables' => ['types' => $results, 'liste_missions' => $liste_missions, 'liste_competences' => $liste_competences]
         ]);
     }
 
@@ -61,19 +70,8 @@ class OffreController extends AbstractController
      */
     public function save(Request $request) 
     {
-        $data = [
-            'titre' => $request->request->get('titre'),
-            'date_publication' => new GlobalDateTime(),
-            'date_fin' => $request->request->get('date_fin'),
-            'detail' => $request->request->get('detail'),
-            'type' => $request->request->get('type'),
-            'salaire_min' => $request->request->get('salaire_min'),
-            'salaire_max' => $request->request->get('salaire_max'),
-            'temps' => $request->request->get('temps'),
-            'id_recruteur' => $this->security->getUser()->getId()
-        ];
-
         if($request->request->get('id') > 0) {
+            //prendre l'offre qui existe dans la BDD
             $repo = $this->entityManager->getRepository(Offre::class);
             $offre = $repo->find($request->request->get('id'));
         }
@@ -81,39 +79,134 @@ class OffreController extends AbstractController
             $offre = new Offre();
         }
 
-        $offre->setTitre($data['titre']);
-        $offre->setDatePublication($data['date_publication']);
-        $offre->setDateFin(new GlobalDateTime($data['date_fin']));
-        $offre->setDetail($data['detail']);
-        $offre->setType($data['type']);
-        $offre->setSalaireMin($data['salaire_min']);
-        $offre->setSalaireMax($data['salaire_max']);
-        $offre->setTemps($data['temps']);
-        $offre->setIdRecruteur($data['id_recruteur']);
+        $offre->setTitre($request->request->get('titre'));
+        $offre->setDatePublication(new GlobalDateTime($request->request->get('date_publication')));
+        $offre->setDateFin(new GlobalDateTime($request->request->get('date_fin')));
+        $offre->setDetail($request->request->get('detail'));
+        $offre->setType($request->request->get('type'));
+        $offre->setSalaireMin($request->request->get('salaire_min'));
+        $offre->setSalaireMax($request->request->get('salaire_max'));
+        $offre->setTemps($request->request->get('temps'));
+        $offre->setIdRecruteur($this->security->getUser()->getId());
+        $offre->setDone(0);
         
         $this->entityManager->persist($offre);
         $this->entityManager->flush();
 
-        return $this->redirectToRoute('offre');
+        //prendre l'id de l'offre ajoutée/mis à jour
+        $offreId = $request->request->get('id') ? $request->request->get('id') : $offre->getId();
 
+        //ajout dans la table mission
+        $this->ajoutMission($offreId, $request);
+
+        //ajout dans la table competence
+        $this->ajoutCompetence($offreId, $request);
+
+        return $this->redirectToRoute('offre');
     }
 
+    //ajout de mission par rapport à une offre
+    public function ajoutMission($newOffreId, $request) {
+        if ($request->request->get('id') > 0) {
+            $repo = $this->entityManager->getRepository(Mission::class);
+            $missions = $repo->findBy(['id_offre' => $request->request->get('id')]);
+        
+            foreach ($missions as $mission) {
+                $this->entityManager->remove($mission);
+            }
+        }
+        
+        for ($i = 0; $i < count($request->request->get('missions')); $i++) {
+            if($request->request->get('missions')[$i] != ""){
+                $mission = new Mission();
+                $mission->setIdOffre($newOffreId);
+                $mission->setNom($request->request->get('missions')[$i]);
+            
+                $this->entityManager->persist($mission);
+            }
+            else{
+                $repo = $this->entityManager->getRepository(Mission::class);
+                $missions = $repo->findBy(['id_offre' => $request->request->get('id')]);
+            
+                foreach ($missions as $mission) {
+                    $this->entityManager->remove($mission);
+                }
+            }
+        }
+
+        $this->entityManager->flush();
+    }
+
+    //ajout de competence par rapport à une offre
+    public function ajoutCompetence($newOffreId, $request) {
+        if ($request->request->get('id') > 0) {
+            $repo = $this->entityManager->getRepository(Competence::class);
+            $competences = $repo->findBy(['id_offre' => $request->request->get('id')]);
+        
+            foreach ($competences as $competence) {
+                $this->entityManager->remove($competence);
+            }
+        }
+        
+        for ($i = 0; $i < count($request->request->get('competences')); $i++) {
+            if($request->request->get('competences')[$i] != ""){
+                $competence = new competence();
+                $competence->setIdOffre($newOffreId);
+                $competence->setNom($request->request->get('competences')[$i]);
+            
+                $this->entityManager->persist($competence);
+            }
+            else{
+                $repo = $this->entityManager->getRepository(Competence::class);
+                $competences = $repo->findBy(['id_offre' => $request->request->get('id')]);
+            
+                foreach ($competences as $competence) {
+                    $this->entityManager->remove($competence);
+                }
+            }
+        }
+
+        $this->entityManager->flush();
+    }
+
+    //selectionner les missions d'une offre lors de la mise à jour
+    public function listeMissions($id = NULL) {
+        $repo = $this->entityManager->getRepository(Mission::class);
+        $liste_missions = $repo->findBy(['id_offre' => $id]);
+
+        return $this->renderView('recruteur/ajax/liste_missions.html.twig', [
+            'controller_name' => 'OffreController',
+            'variables' => ['liste_missions' => $liste_missions, 'id' => $id]
+        ]);
+    }
+
+    //selectionner les compétences d'une offre lors de la mise à jour
+    public function listeCompetences($id = NULL) {
+        $repo = $this->entityManager->getRepository(Competence::class);
+        $liste_competences = $repo->findBy(['id_offre' => $id]);
+
+        return $this->renderView('recruteur/ajax/liste_competences.html.twig', [
+            'controller_name' => 'OffreController',
+            'variables' => ['liste_competences' => $liste_competences, 'id' => $id]
+        ]);
+    }
+    
     /**
      * @Route("/detail_offre", name="detail_offre")
      */
     public function detail_offre(Request $request)
     {
-        $sql = "SELECT detail FROM offre WHERE id = ".$request->request->get('id');
-        $connection = $this->entityManager->getConnection();
-        $statement = $connection->executeQuery($sql);
-        $offre = $statement->fetchAllAssociative();
+        $missions = $this->repository->selectMissionOfOffre($request);
+        $competences = $this->repository->selectCompetenceOfOffre($request);
 
-        foreach ($offre as $value) {
-            $detail = $value['detail'];
-        }
+        $view = $this->renderView('recruteur/ajax/detail_offre.html.twig', [
+            'controller_name' => 'OffreController',
+            'variables' => ['missions' => $missions,
+                            'competences' => $competences]
+        ]);
 
         // Convertissez les données en JSON et créez une réponse JSON
-        $json = json_encode($detail);
+        $json = json_encode($view);
         $response = new JsonResponse($json, 200, [], true);
 
         return $response;
@@ -127,12 +220,22 @@ class OffreController extends AbstractController
         $repository = $this->entityManager->getRepository(Type::class);
         $results = $repository->findAll();
 
+        //retourner un ajax pour la liste des missions
+        $liste_missions = $this->listeMissions($id);
+
+        //retourner un ajax pour la liste des competences
+        $liste_competences = $this->listeCompetences($id);
+
         $repo = $this->entityManager->getRepository(Offre::class);
         $offre = $repo->find($id);
 
         return $this->render('recruteur/offre/create.html.twig', [
             'controller_name' => 'OffreController',
-            'variables' => ['types' => $results, 'id' => $id, 'offre' => $offre]
+            'variables' => ['types' => $results, 
+                            'id' => $id, 
+                            'offre' => $offre, 
+                            'liste_missions' => $liste_missions, 
+                            'liste_competences' => $liste_competences]
         ]);
     }
 
