@@ -7,7 +7,7 @@
 /public/bundles/
 /var/
 /vendor/
-/public/fontawesome/
+/public/fontawesome-6/
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###

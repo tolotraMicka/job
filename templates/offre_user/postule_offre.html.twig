@@ -1,0 +1,78 @@
+{% extends "baseOffre.html.twig" %}
+{% block body %}
+
+    <style>
+        .bloc{
+            border:1px solid black;
+            width: 100px;
+            height:100px;
+        }
+        .col_entreprise{
+            gap:12px;
+        }
+    </style>
+   <div class="container">
+        <a href="#"><p>< Revenir au profil de l'offre </p></a>
+        <div class="row">
+            <div class="d-flex flex-col col_entreprise">
+                <div>
+                    <div class="bloc-image"></div>
+                </div>
+                <div>
+                    {{offre.titre}}<br>
+                    {{offre.titre}}<br>
+                    {{offre.titre}}<br>
+                    {{offre.titre}}<br>
+                </div> 
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-10">
+                <p class="text-warning h2">Postule maintenant</p>
+                <hr>
+            </div>
+        </div> 
+        <div class="row">
+            <div class="col-md-10">
+                <p>Tous les champs sont obligatoires</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-10">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-10">
+                <label for="email" class="form-label">Nom:</label>
+                <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-5">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+            </div>
+            <div class="col-md-5">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-10">
+                <label for="email" class="form-label">CV sélectionné</label>
+                <input type="file" class="form-control" id="email" placeholder="Enter email" name="email">
+                <hr>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-10">
+                <button type="submit" class="btn btn-warning text-light">Postuler</button>
+            </div>
+        </div>
+    
+    
+    </div>
+
+{% endblock %}
