@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -25,8 +26,10 @@ class SecurityUserController extends AbstractController
     /**
      * @Route("/inscription_user", name="app_inscription_user")
      */
-    public function registration(Request $request, UserPasswordEncoderInterface $encoder): Response
+    public function registration(Request $request,SessionInterface $session, UserPasswordEncoderInterface $encoder): Response
     {
+        // $session=$session->get("value");
+        // dd($request,$session);
         $user = new User();
         $user_candidat= new Candidats();
         $roles=["ROLE_CANDIDAT","ROLE_JOBBEUR"];
@@ -58,22 +61,31 @@ class SecurityUserController extends AbstractController
      /**
      * @Route("/connexion_user", name="app_connexion_user")
      */
-    public function login(Request $request, UserPasswordEncoderInterface $passwordEncoder, TokenStorageInterface $tokenStorage, AuthenticationUtils $authenticationUtils): Response
+    public function login(Request $request,SessionInterface $session, UserPasswordEncoderInterface $passwordEncoder, TokenStorageInterface $tokenStorage, AuthenticationUtils $authenticationUtils): Response
     {
-        // dd($request,$user);
             // Vérifier si l'utilisateur existe et si le mot de passe est valide
             if ($request->isMethod('POST')) {
                 $email = $request->request->get('_email');
                 $password = $request->request->get('_password');
-       
+                
+                $id_session_offre=$session->get("value");
                 // Récupérer l'utilisateur correspondant à l'email
                 $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['email' => $email]);
                 // dd($user);
             if ($user && $passwordEncoder->isPasswordValid($user, $password)) {
-                $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
-                $tokenStorage->setToken($token);
-                // Rediriger l'utilisateur vers la page d'accueil ou toute autre page souhaitée
-                return $this->redirectToRoute('app_home');
+                if($id_session_offre !=null){
+                    $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
+                    $tokenStorage->setToken($token);
+                    // Rediriger l'utilisateur vers la page d'accueil ou toute autre page souhaitée
+                    $session->remove('value');
+                    return $this->redirectToRoute('postule_offre',['id'=>$id_session_offre]);
+                }else{
+                    $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
+                    $tokenStorage->setToken($token);
+                    // Rediriger l'utilisateur vers la page d'accueil ou toute autre page souhaitée
+                    return $this->redirectToRoute('app_home');
+                }
+               
             }else {
                 // Afficher un message d'erreur
                 $this->addFlash('error', 'email ou mot de passe incorrect');

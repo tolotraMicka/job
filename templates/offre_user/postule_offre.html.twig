@@ -12,17 +12,17 @@
         }
     </style>
    <div class="container">
-        <a href="#"><p>< Revenir au profil de l'offre </p></a>
+        <a href="{{path('offre_user')}}"><p>< Revenir au profil de l'offre </p></a>
         <div class="row">
             <div class="d-flex flex-col col_entreprise">
                 <div>
                     <div class="bloc-image"></div>
                 </div>
                 <div>
+                    {# {{offre.titre}}<br>
                     {{offre.titre}}<br>
                     {{offre.titre}}<br>
-                    {{offre.titre}}<br>
-                    {{offre.titre}}<br>
+                    {{offre.titre}}<br> #}
                 </div> 
             </div>
         </div>
@@ -74,5 +74,4 @@
     
     
     </div>
-
 {% endblock %}

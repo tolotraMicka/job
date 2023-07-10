@@ -17,6 +17,8 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class OffreController extends AbstractController
 {
@@ -194,22 +196,51 @@ class OffreController extends AbstractController
     /**
      * @Route("/detail_offre", name="detail_offre")
      */
-    public function detail_offre(Request $request)
+    public function detail_offre(Request $request, OffreRepository $repoOffre)
     {
+        // dd($request);
         $missions = $this->repository->selectMissionOfOffre($request);
         $competences = $this->repository->selectCompetenceOfOffre($request);
+
+        $id_offre=$request->request->get("id");
+        $offre= $repoOffre->find($id_offre);
+        // dd($offre);
 
         $view = $this->renderView('recruteur/ajax/detail_offre.html.twig', [
             'controller_name' => 'OffreController',
             'variables' => ['missions' => $missions,
-                            'competences' => $competences]
+                            'competences' => $competences],
+            'offre'=> $offre
         ]);
-
+        
         // Convertissez les données en JSON et créez une réponse JSON
         $json = json_encode($view);
         $response = new JsonResponse($json, 200, [], true);
-
+        
         return $response;
+        
+    }
+
+    /**
+     * @Route("/postule-rapide/{id}",name="postule_offre")
+     */
+    public function postuler_offre($id,Request $request,OffreRepository $repoOffre, SessionInterface $session){
+       
+
+        $session->set("value",$id);
+        $id_session_offre= $session->get("value");
+        
+        $offre= $repoOffre->find($id);
+        if($this->getUser()==null && isset($id_session_offre)){
+            return $this->redirectToRoute('app_connexion_user',['value'=>$id_session_offre]);
+        }
+        else{
+            return $this->render('offre_user/postule_offre.html.twig',[
+                'offre'=>$offre
+            ]);    
+        }
+       
+        
     }
 
     /**

@@ -52,6 +52,7 @@ security:
     access_control:
             - { path: '^/particulier', roles: ROLE_PARTICULIER }
             - { path: '^/recruteur_accueil', roles: ROLE_RECRUTEUR }
+            - { path: '^/recruteur_accueil', roles: [ROLE_CANDIDAT,IS_AUTHENTICATED_ANONYMOUSLY]}
             # - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
 # config/services.yaml
